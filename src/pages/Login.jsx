@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import defaultAction from '../store/actions';
+import { Link } from 'react-router-dom';
+import defaultAction, { fetchToken } from '../store/actions';
 
 class Login extends React.Component {
   constructor() {
@@ -26,9 +27,16 @@ class Login extends React.Component {
     return this.setState({ disableButton: true });
   };
 
+  startGame = () => {
+    const { setGlobalUser, getToken } = this.props;
+    const { name, email } = this.state;
+    setGlobalUser({ name, email });
+    getToken();
+  }
+
   render() {
     const { disableButton, name, email } = this.state;
-    const { setGlobalUser } = this.props;
+
     return (
       <main>
         <label htmlFor="name">
@@ -51,14 +59,16 @@ class Login extends React.Component {
             data-testid="input-gravatar-email"
           />
         </label>
-        <button
-          data-testid="btn-play"
-          disabled={ disableButton }
-          type="button"
-          onClick={ setGlobalUser(this.state) }
-        >
-          Play
-        </button>
+        <Link to="/play">
+          <button
+            data-testid="btn-play"
+            disabled={ disableButton }
+            type="button"
+            onClick={ this.startGame }
+          >
+            Play
+          </button>
+        </Link>
       </main>
     );
   }
@@ -66,10 +76,12 @@ class Login extends React.Component {
 
 Login.propTypes = {
   setGlobalUser: PropTypes.func.isRequired,
+  getToken: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   setGlobalUser: (state) => dispatch(defaultAction(state, 'PLAY_GAME')),
+  getToken: () => dispatch(fetchToken()),
 });
 
 export default connect(null, mapDispatchToProps)(Login);
