@@ -1,0 +1,7 @@
+.choice-correct--escolhido {
+    border: 3px solid rgb(6, 240, 15)
+  }
+  
+  .choice-incorrect--escolhido {
+    border: 3px solid rgb(255, 0, 0)
+  }
