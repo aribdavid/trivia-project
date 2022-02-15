@@ -5,7 +5,6 @@ import Header from '../components/Header';
 import { fetchQuestions, fetchToken } from '../store/actions';
 
 const zeroPointFive = 0.5;
-const three = 3;
 
 class GamePage extends React.Component {
   constructor() {
@@ -15,13 +14,10 @@ class GamePage extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { getQuestions, response_code: responseCode, getToken } = this.props;
-    getQuestions();
-    if (responseCode === three) {
-      getToken();
-      getQuestions();
-    }
+  async componentDidMount() {
+    const { getQuestions, getToken } = this.props;
+    await getToken();
+    await getQuestions(localStorage.getItem('token'));
   }
 
   handleCounter = () => {
@@ -51,26 +47,27 @@ class GamePage extends React.Component {
                 {[questions[counter].correct_answer,
                   ...questions[counter].incorrect_answers]
                   .sort(() => Math.random() - zeroPointFive) // solution to shuffle arrays on link https://flaviocopes.com/how-to-shuffle-array-javascript/
-                  .map((q, i) => (
-                    (questions[counter].incorrect_answers.some((elem) => elem === q))
+                  .map((question, index) => (
+                    (questions[counter]
+                      .incorrect_answers.some((elem) => elem === question))
                       ? (
                         <button
                           type="button"
-                          data-testid={ `wrong-answer-${i}` }
-                          key={ i }
+                          data-testid={ `wrong-answer-${index}` }
+                          key={ index }
                           onClick={ this.checkCorrectAnswer }
                         >
-                          {q}
+                          {question}
                         </button>)
                       : (
                         <button
                           type="button"
                           name="correct_answer"
-                          data-testid="correct_answer"
-                          key={ i }
+                          data-testid="correct-answer"
+                          key={ index }
                           onClick={ this.checkCorrectAnswer }
                         >
-                          {q}
+                          {question}
 
                         </button>)
                   ))}
@@ -90,12 +87,11 @@ GamePage.propTypes = {
   questions: PropTypes.arrayOf.isRequired,
   loading: PropTypes.bool.isRequired,
   getToken: PropTypes.func.isRequired,
-  response_code: PropTypes.number.isRequired,
 };
 
 const mapDispatchToProps = (dispatch) => ({
   getToken: () => dispatch(fetchToken()),
-  getQuestions: () => dispatch(fetchQuestions()),
+  getQuestions: (token) => dispatch(fetchQuestions(token)),
 });
 
 const mapStateToProps = (state) => ({

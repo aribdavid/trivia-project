@@ -15,8 +15,8 @@ function receiveToken(payload) {
 }
 
 export function fetchToken() {
-  return (dispatch) => {
-    dispatch(requestToken());
+  return async (dispatch) => {
+    await dispatch(requestToken());
     return fetch('https://opentdb.com/api_token.php?command=request')
       .then((response) => response.json())
       .then((data) => dispatch(receiveToken(data)));
@@ -32,10 +32,10 @@ function receiveQuestions(payload) {
     payload };
 }
 
-export function fetchQuestions() {
-  return (dispatch) => {
-    dispatch(requestQuestions());
-    return fetch(`https://opentdb.com/api.php?amount=5&token=${localStorage.getItem('token')}`)
+export function fetchQuestions(token) {
+  return async (dispatch) => {
+    await dispatch(requestQuestions());
+    return fetch(`https://opentdb.com/api.php?amount=5&token=${token}`)
       .then((response) => response.json())
       .then((data) => dispatch(receiveQuestions(data)));
   };

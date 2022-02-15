@@ -9,6 +9,8 @@ const INITIAL_STATE = {
 
 const playerReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+  case 'REQUEST_QUESTIONS':
+    return { ...state, loading: true };
   case 'RECEIVE_QUESTIONS':
     return { ...state, questions: action.payload, loading: false };
   default:
