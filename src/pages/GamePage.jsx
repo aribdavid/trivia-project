@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { fetchQuestions, fetchToken } from '../store/actions';
+import './GamePage.css';
 
 const zeroPointFive = 0.5;
 
@@ -11,6 +12,7 @@ class GamePage extends React.Component {
     super();
     this.state = {
       counter: 0,
+      selected:false,
     };
   }
 
@@ -24,15 +26,16 @@ class GamePage extends React.Component {
     this.setState((prevState) => ({ counter: prevState.counter + 1 }));
   }
 
-  checkCorrectAnswer = ({ target }) => {
-    if (target.name === 'correct_answer') {
-      return ('Acertou');
-    }
+  checkCorrectAnswer = () => {
+    // if (target.name === 'correct_answer') {
+    //   return ('Acertou');
+    // }
+    this.setState({ selected: true });
   }
 
   render() {
     const { questions, loading } = this.props;
-    const { counter } = this.state;
+    const { counter, selected } = this.state;
     return (
       <div>
         <Header />
@@ -56,6 +59,7 @@ class GamePage extends React.Component {
                           data-testid={ `wrong-answer-${index}` }
                           key={ index }
                           onClick={ this.checkCorrectAnswer }
+                          className={ `choice-incorrect${selected ? '--escolhido' : ''}` }
                         >
                           {question}
                         </button>)
@@ -66,6 +70,7 @@ class GamePage extends React.Component {
                           data-testid="correct-answer"
                           key={ index }
                           onClick={ this.checkCorrectAnswer }
+                          className={ `choice-correct${ selected ? '--escolhido' : ''}`}
                         >
                           {question}
 
