@@ -9,7 +9,11 @@ class Header extends React.Component {
       <header>
         <img alt="profile" src={ gravatarEmail } data-testid="header-profile-picture" />
         <h1 data-testid="header-player-name">{name}</h1>
-        <h1 data-testid="header-player-score">{score}</h1>
+        <h1 data-testid="header-player-score">
+          Score:
+          {' '}
+          {score}
+        </h1>
       </header>
     );
   }

@@ -22,3 +22,21 @@ export function fetchToken() {
       .then((data) => dispatch(receiveToken(data)));
   };
 }
+
+function requestQuestions() {
+  return { type: 'REQUEST_QUESTIONS' };
+}
+
+function receiveQuestions(payload) {
+  return { type: 'RECEIVE_QUESTIONS',
+    payload };
+}
+
+export function fetchQuestions() {
+  return (dispatch) => {
+    dispatch(requestQuestions());
+    return fetch(`https://opentdb.com/api.php?amount=5&token=${localStorage.getItem('token')}`)
+      .then((response) => response.json())
+      .then((data) => dispatch(receiveQuestions(data)));
+  };
+}
