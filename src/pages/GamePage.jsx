@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
 import { fetchQuestions, fetchToken } from '../store/actions';
-import './GamePage.css';
 
 const zeroPointFive = 0.5;
 const ONE_THOUSAND = 1000;
@@ -61,6 +60,16 @@ class GamePage extends React.Component {
 
   render() {
     const { counter, selected, disabled, timer, results, isLoading } = this.state;
+  checkCorrectAnswer = ({ target }) => {
+    if (target.name === 'correct_answer') {
+      return ('Acertou');
+    }
+  }
+
+  render() {
+    const { questions, loading } = this.props;
+    const { counter } = this.state;
+
     return (
       <div>
         <Header />
