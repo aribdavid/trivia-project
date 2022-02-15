@@ -6,13 +6,19 @@ import { fetchQuestions, fetchToken } from '../store/actions';
 import './GamePage.css';
 
 const zeroPointFive = 0.5;
+const ONE_THOUSAND = 1000;
+const THIRTY_THOUSAND = 30000;
 
 class GamePage extends React.Component {
   constructor() {
     super();
     this.state = {
       counter: 0,
-      selected:false,
+      selected: false,
+      timer: 0,
+      disabled: false,
+      results: [],
+      isLoading: true,
     };
   }
 
@@ -20,6 +26,29 @@ class GamePage extends React.Component {
     const { getQuestions, getToken } = this.props;
     await getToken();
     await getQuestions(localStorage.getItem('token'));
+    this.saveQuestions();
+    this.handleTimer();
+  }
+
+  saveQuestions = () => {
+    const { questions } = this.props;
+    this.setState({
+      results: questions,
+      isLoading: false,
+    });
+  }
+
+  handleTimer = () => {
+    const timer = setInterval(() => {
+      this.setState((prevState) => (
+        {
+          timer: prevState.timer + 1,
+        }
+      ));
+    }, ONE_THOUSAND);
+    setTimeout(() => {
+      this.setState({ disabled: true }, () => clearInterval(timer));
+    }, THIRTY_THOUSAND);
   }
 
   handleCounter = () => {
@@ -27,31 +56,31 @@ class GamePage extends React.Component {
   }
 
   checkCorrectAnswer = () => {
-    // if (target.name === 'correct_answer') {
-    //   return ('Acertou');
-    // }
     this.setState({ selected: true });
   }
 
   render() {
-    const { questions, loading } = this.props;
-    const { counter, selected } = this.state;
+    const { counter, selected, disabled, timer, results, isLoading } = this.state;
     return (
       <div>
         <Header />
         {
-          !loading && (
+          !isLoading && (
             <div>
-              <h1 data-testid="question-category">{questions[counter].category}</h1>
+              <h3>
+                Timer:
+                {' '}
+                {timer}
+              </h3>
+              <h1 data-testid="question-category">{results[counter].category}</h1>
               <p data-testid="question-text">
-                {questions[counter].question}
+                {results[counter].question}
               </p>
               <div data-testid="answer-options">
-                {[questions[counter].correct_answer,
-                  ...questions[counter].incorrect_answers]
+                { [results[counter].correct_answer, ...results[counter].incorrect_answers]
                   .sort(() => Math.random() - zeroPointFive) // solution to shuffle arrays on link https://flaviocopes.com/how-to-shuffle-array-javascript/
                   .map((question, index) => (
-                    (questions[counter]
+                    (results[counter]
                       .incorrect_answers.some((elem) => elem === question))
                       ? (
                         <button
@@ -60,6 +89,7 @@ class GamePage extends React.Component {
                           key={ index }
                           onClick={ this.checkCorrectAnswer }
                           className={ `choice-incorrect${selected ? '--escolhido' : ''}` }
+                          disabled={ disabled }
                         >
                           {question}
                         </button>)
@@ -70,7 +100,8 @@ class GamePage extends React.Component {
                           data-testid="correct-answer"
                           key={ index }
                           onClick={ this.checkCorrectAnswer }
-                          className={ `choice-correct${ selected ? '--escolhido' : ''}`}
+                          className={ `choice-correct${selected ? '--escolhido' : ''}` }
+                          disabled={ disabled }
                         >
                           {question}
 
@@ -90,7 +121,6 @@ class GamePage extends React.Component {
 GamePage.propTypes = {
   getQuestions: PropTypes.func.isRequired,
   questions: PropTypes.arrayOf.isRequired,
-  loading: PropTypes.bool.isRequired,
   getToken: PropTypes.func.isRequired,
 };
 
@@ -101,8 +131,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   questions: state.playerReducer.questions.results,
-  loading: state.playerReducer.loading,
-  response: state.playerReducer.questions.response_code,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
