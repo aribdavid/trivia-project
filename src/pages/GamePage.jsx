@@ -24,6 +24,7 @@ class GamePage extends React.Component {
       disabled: false,
       results: [],
       isLoading: true,
+      renderNext: false,
     };
   }
 
@@ -76,7 +77,7 @@ class GamePage extends React.Component {
       }
     };
     const left = THIRTY - timer;
-    this.setState({ selected: true }, () => {
+    this.setState({ selected: true, renderNext: true }, () => {
       if (target.name === 'correct_answer') {
         setScore(CONST_10 + (left * difficulty()));
       }
@@ -84,7 +85,8 @@ class GamePage extends React.Component {
   }
 
   render() {
-    const { counter, selected, disabled, timer, results, isLoading } = this.state;
+    const { counter, selected,
+      disabled, timer, results, isLoading, renderNext } = this.state;
     return (
       <div>
         <Header />
@@ -134,7 +136,16 @@ class GamePage extends React.Component {
                   ))}
               </div>
               <br />
-              <button type="button" onClick={ this.handleCounter }>Proxima</button>
+              {renderNext
+              && (
+                <button
+                  type="button"
+                  data-testid="btn-next"
+                  onClick={ this.handleCounter }
+                >
+                  Next
+                </button>
+              )}
             </div>
           )
         }
