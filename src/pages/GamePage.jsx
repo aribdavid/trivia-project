@@ -8,6 +8,7 @@ import './GamePage.css';
 const CONST_1 = 1;
 const CONST_2 = 2;
 const CONST_3 = 3;
+const CONST_4 = 4;
 const CONST_10 = 10;
 const zeroPointFive = 0.5;
 const ONE_THOUSAND = 1000;
@@ -58,7 +59,10 @@ class GamePage extends React.Component {
   }
 
   handleCounter = () => {
-    this.setState((prevState) => ({ counter: prevState.counter + 1 }));
+    const { counter } = this.state;
+    if (counter < CONST_4) {
+      this.setState((prevState) => ({ counter: prevState.counter + 1, timer: 0 }));
+    }
   }
 
   checkCorrectAnswer = ({ target }) => {
@@ -87,6 +91,7 @@ class GamePage extends React.Component {
   render() {
     const { counter, selected,
       disabled, timer, results, isLoading, renderNext } = this.state;
+
     return (
       <div>
         <Header />
@@ -138,6 +143,7 @@ class GamePage extends React.Component {
               <br />
               {renderNext
               && (
+
                 <button
                   type="button"
                   data-testid="btn-next"
@@ -145,7 +151,7 @@ class GamePage extends React.Component {
                 >
                   Next
                 </button>
-              )}
+              ) }
             </div>
           )
         }
