@@ -5,7 +5,8 @@ import './App.css';
 import Login from './pages/Login';
 import Configuracao from './pages/Configuracao';
 import GamePage from './pages/GamePage';
-import Feedback from './components/Feedback';
+import Feedback from './pages/Feedback';
+import Ranking from './pages/Ranking';
 
 export default function App() {
   return (
@@ -18,11 +19,12 @@ export default function App() {
         <Route exact path="/settings">
           <Configuracao />
         </Route>
-        <Route exact path="/play">
-          <GamePage />
-        </Route>
-        <Route exact path="/feedback">
+        <Route exact path="/play" component={ GamePage } />
+        <Route path="/feedback">
           <Feedback />
+        </Route>
+        <Route path="/ranking">
+          <Ranking />
         </Route>
       </header>
     </div>
