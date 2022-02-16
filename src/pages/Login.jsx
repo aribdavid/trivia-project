@@ -30,7 +30,7 @@ class Login extends React.Component {
    startGame = async () => {
      const { setGlobalUser } = this.props;
      const { name, email } = this.state;
-     setGlobalUser({ name, email });
+     setGlobalUser({ name, gravatarEmail: email });
    }
 
    render() {

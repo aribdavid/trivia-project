@@ -26,6 +26,7 @@ class GamePage extends React.Component {
       results: [],
       isLoading: true,
       renderNext: false,
+      options: [],
     };
   }
 
@@ -39,8 +40,12 @@ class GamePage extends React.Component {
 
   saveQuestions = () => {
     const { questions } = this.props;
+    const options = questions
+      .map((elem) => [elem.correct_answer, ...elem.incorrect_answers]
+        .sort(() => Math.random() - zeroPointFive)); // solution to shuffle arrays on link https://flaviocopes.com/how-to-shuffle-array-javascript/
     this.setState({
       results: questions,
+      options,
       isLoading: false,
     });
   }
@@ -60,8 +65,15 @@ class GamePage extends React.Component {
 
   handleCounter = () => {
     const { counter } = this.state;
+    const { history } = this.props;
     if (counter < CONST_4) {
-      this.setState((prevState) => ({ counter: prevState.counter + 1, timer: 0 }));
+      this.setState((prevState) => ({ counter: prevState.counter + 1,
+        timer: 0,
+        renderNext: false,
+        selected: false,
+        disabled: false }));
+    } else {
+      history.push('/feedback');
     }
   }
 
@@ -81,16 +93,17 @@ class GamePage extends React.Component {
       }
     };
     const left = THIRTY - timer;
-    this.setState({ selected: true, renderNext: true }, () => {
+    this.setState({ selected: true, renderNext: true, disabled: true }, () => {
       if (target.name === 'correct_answer') {
-        setScore(CONST_10 + (left * difficulty()));
+        const obj = { score: CONST_10 + (left * difficulty()), assertions: 1 };
+        setScore(obj);
       }
     });
   }
 
   render() {
     const { counter, selected,
-      disabled, timer, results, isLoading, renderNext } = this.state;
+      disabled, timer, results, isLoading, renderNext, options } = this.state;
 
     return (
       <div>
@@ -108,8 +121,7 @@ class GamePage extends React.Component {
                 {results[counter].question}
               </p>
               <div data-testid="answer-options">
-                { [results[counter].correct_answer, ...results[counter].incorrect_answers]
-                  .sort(() => Math.random() - zeroPointFive) // solution to shuffle arrays on link https://flaviocopes.com/how-to-shuffle-array-javascript/
+                { options[counter]
                   .map((question, index) => (
                     (results[counter]
                       .incorrect_answers.some((elem) => elem === question))
@@ -143,7 +155,6 @@ class GamePage extends React.Component {
               <br />
               {renderNext
               && (
-
                 <button
                   type="button"
                   data-testid="btn-next"
@@ -151,7 +162,7 @@ class GamePage extends React.Component {
                 >
                   Next
                 </button>
-              ) }
+              )}
             </div>
           )
         }
@@ -174,6 +185,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const mapStateToProps = (state) => ({
   questions: state.player.questions.results,
+  token: state.token,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GamePage);
