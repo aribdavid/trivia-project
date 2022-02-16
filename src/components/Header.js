@@ -28,7 +28,7 @@ Header.propTypes = {
 
 const mapStateToProps = (state) => ({
   name: state.loginReducer.name,
-  score: state.playerReducer.score,
+  score: state.player.score,
   email: state.loginReducer.email,
 });
 

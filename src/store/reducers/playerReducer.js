@@ -13,6 +13,12 @@ const playerReducer = (state = INITIAL_STATE, action) => {
     return { ...state, loading: true };
   case 'RECEIVE_QUESTIONS':
     return { ...state, questions: action.payload, loading: false };
+  case 'UPDATE_SCORE':
+    localStorage.setItem('ranking',
+      JSON.stringify({ name: state.name,
+        score: action.payload,
+        picture: state.gravatarEmail }));
+    return { ...state, score: action.payload };
   default:
     return state;
   }
