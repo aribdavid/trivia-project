@@ -1,12 +1,12 @@
 
 # Boas vindas ao repositório do projeto de Trivia!
 
----# Tecnologias:
+## Tecnologias:
   - Javascript
   - React
   - Redux
   - CSS
----# Habilidades
+## Habilidades
 
   - Criar um store Redux em aplicações React
 
