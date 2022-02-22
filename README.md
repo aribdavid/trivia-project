@@ -37,7 +37,7 @@ Um jogo de perguntas e respostas baseado no jogo **Trivia** _(tipo um show do mi
 ## Como Executar o projeto localmente:
 
 1. Clone o repositório
-  * `git clone git@github.com:tryber/sd-017-project-trivia-react-redux.git`
+  * `git clone https://github.com/aribdavid/trivia-project`
 
 2. Instale as dependências e inicialize o projeto
   * Instale as dependências:
